@@ -1,1 +1,1 @@
-# Proyecto_mineria
+# Procesos-estocasticos
