@@ -1,0 +1,746 @@
+\documentclass[12pt]{article}
+
+\usepackage[spanish,es-noshorthands]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb,mathtools}
+\usepackage{geometry}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,bending}
+
+\geometry{margin=2.5cm}
+
+\title{Ejercicios de Cadenas de Markov}
+\author{}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section*{Ejercicio 1}
+
+Considere la cadena de Markov con espacio de estados
+\[
+S=\{1,2,3\},
+\]
+y matriz de transición
+\[
+P=
+\begin{pmatrix}
+\frac12 & \frac14 & \frac14\\[4pt]
+\frac13 & 0 & \frac23\\[4pt]
+\frac12 & \frac12 & 0
+\end{pmatrix}.
+\]
+
+\subsection*{Diagrama de transición}
+
+De la matriz se observa que:
+
+\[
+p_{11}=\frac12,\quad p_{12}=\frac14,\quad p_{13}=\frac14,
+\]
+\[
+p_{21}=\frac13,\quad p_{22}=0,\quad p_{23}=\frac23,
+\]
+\[
+p_{31}=\frac12,\quad p_{32}=\frac12,\quad p_{33}=0.
+\]
+
+Entonces el diagrama de transición es:
+
+\begin{center}
+\begin{tikzpicture}[>=Latex, node distance=3cm, auto]
+\node[circle,draw] (1) {$1$};
+\node[circle,draw,right of=1] (2) {$2$};
+\node[circle,draw,below=2cm of 1] (3) {$3$};
+
+\draw[->] (1) edge[loop above] node {$\frac12$} (1);
+\draw[->] (1) edge[bend left] node {$\frac14$} (2);
+\draw[->] (1) edge[bend right] node[left] {$\frac14$} (3);
+
+\draw[->] (2) edge[bend left] node {$\frac13$} (1);
+\draw[->] (2) edge[bend left] node[right] {$\frac23$} (3);
+
+\draw[->] (3) edge[bend right] node[left] {$\frac12$} (1);
+\draw[->] (3) edge[bend left] node {$\frac12$} (2);
+\end{tikzpicture}
+\end{center}
+
+\subsection*{Cálculo de \(P(X_1=3,X_2=2,X_3=1)\)}
+
+Nos dicen que
+\[
+P(X_1=1)=P(X_1=2)=\frac14.
+\]
+Entonces
+\[
+P(X_1=3)=1-\frac14-\frac14=\frac12.
+\]
+
+Ahora usamos la propiedad de Markov:
+\[
+P(X_1=3,X_2=2,X_3=1)
+=
+P(X_1=3)\,P(X_2=2\mid X_1=3)\,P(X_3=1\mid X_2=2).
+\]
+
+De la matriz de transición se tiene:
+\[
+P(X_2=2\mid X_1=3)=p_{32}=\frac12,
+\qquad
+P(X_3=1\mid X_2=2)=p_{21}=\frac13.
+\]
+
+Sustituyendo:
+\[
+P(X_1=3,X_2=2,X_3=1)
+=
+\frac12\cdot\frac12\cdot\frac13
+=
+\frac{1}{12}.
+\]
+
+Por lo tanto,
+\[
+\boxed{P(X_1=3,X_2=2,X_3=1)=\frac{1}{12}}.
+\]
+
+\newpage
+\section*{Ejercicio 2}
+
+Se quiere calcular la probabilidad de que la cadena se absorba en la clase recurrente
+\[
+R_1=\{1,2\},
+\]
+suponiendo que \(X_0=3\).
+
+Sea
+\[
+h_i=P_i(\text{absorberse en }R_1).
+\]
+
+Como los estados \(1\) y \(2\) ya están dentro de \(R_1\), entonces
+\[
+h_1=h_2=1.
+\]
+
+Y como los estados \(5,6,7\) pertenecen a otra clase recurrente, se tiene
+\[
+h_5=h_6=h_7=0.
+\]
+
+Ahora planteamos las ecuaciones para los estados transitorios.
+
+Desde el estado \(3\), la cadena va a \(1\) con probabilidad \(\frac12\) y a \(4\) con probabilidad \(\frac12\), por lo que:
+\[
+h_3=\frac12(1)+\frac12 h_4.
+\]
+
+Desde el estado \(4\), la cadena va a \(1\) con probabilidad \(\frac14\), a \(3\) con probabilidad \(\frac14\) y a \(7\) con probabilidad \(\frac12\). Entonces:
+\[
+h_4=\frac14(1)+\frac14 h_3+\frac12(0).
+\]
+
+Así, el sistema queda:
+\[
+h_3=\frac12+\frac12 h_4,
+\qquad
+h_4=\frac14+\frac14 h_3.
+\]
+
+Sustituyendo la segunda ecuación en la primera:
+\[
+h_3=\frac12+\frac12\left(\frac14+\frac14 h_3\right).
+\]
+
+Desarrollando:
+\[
+h_3=\frac12+\frac18+\frac18 h_3
+=\frac58+\frac18 h_3.
+\]
+
+Pasamos el término con \(h_3\) al lado izquierdo:
+\[
+h_3-\frac18 h_3=\frac58.
+\]
+
+\[
+\frac78 h_3=\frac58.
+\]
+
+Por lo tanto,
+\[
+h_3=\frac{5}{7}.
+\]
+
+Entonces, la probabilidad de absorberse en \(R_1\), empezando en \(3\), es
+\[
+\boxed{\frac{5}{7}}.
+\]
+
+\newpage
+\section*{Ejercicio 3}
+
+Ahora se pide calcular el tiempo esperado de absorción, empezando en \(X_0=3\).
+
+Sea
+\[
+T=\min\{n\geq 0: X_n\in R_1\cup R_2\},
+\]
+es decir, el tiempo en que la cadena entra por primera vez a alguna clase recurrente.
+
+Definimos
+\[
+t_i=E_i[T].
+\]
+
+Como en los estados recurrentes la absorción ya ocurrió, se tiene:
+\[
+t_1=t_2=t_5=t_6=t_7=0.
+\]
+
+Solo faltan los estados transitorios \(3\) y \(4\).
+
+Desde el estado \(3\):
+\[
+t_3=1+\frac12 t_1+\frac12 t_4.
+\]
+Como \(t_1=0\), queda
+\[
+t_3=1+\frac12 t_4.
+\]
+
+Desde el estado \(4\):
+\[
+t_4=1+\frac14 t_1+\frac14 t_3+\frac12 t_7.
+\]
+Como \(t_1=t_7=0\), queda
+\[
+t_4=1+\frac14 t_3.
+\]
+
+Entonces el sistema es
+\[
+t_3=1+\frac12 t_4,
+\qquad
+t_4=1+\frac14 t_3.
+\]
+
+Sustituyendo la segunda ecuación en la primera:
+\[
+t_3=1+\frac12\left(1+\frac14 t_3\right).
+\]
+
+Desarrollando:
+\[
+t_3=1+\frac12+\frac18 t_3
+=\frac32+\frac18 t_3.
+\]
+
+Pasando el término con \(t_3\) al lado izquierdo:
+\[
+t_3-\frac18 t_3=\frac32.
+\]
+
+\[
+\frac78 t_3=\frac32.
+\]
+
+Por lo tanto,
+\[
+t_3=\frac32\cdot\frac87=\frac{12}{7}.
+\]
+
+Así, el tiempo esperado de absorción es
+\[
+\boxed{E[T\mid X_0=3]=\frac{12}{7}}.
+\]
+
+\newpage
+\section*{Ejercicio 4}
+
+Se pide calcular el tiempo medio de recurrencia al estado \(1\), suponiendo que \(X_0=1\).
+
+Sea
+\[
+R=\min\{n\geq 1:X_n=1\}.
+\]
+
+La matriz de transición es
+\[
+P=
+\begin{pmatrix}
+\frac14 & \frac12 & \frac14\\[4pt]
+\frac13 & 0 & \frac23\\[4pt]
+\frac12 & 0 & \frac12
+\end{pmatrix}.
+\]
+
+Primero calculamos el tiempo esperado para llegar a \(1\) empezando desde \(2\) y desde \(3\).
+
+Sea
+\[
+m_2=E_2[\tau_1],\qquad m_3=E_3[\tau_1],
+\]
+donde
+\[
+\tau_1=\min\{n\geq 0:X_n=1\}.
+\]
+
+Desde el estado \(3\):
+\[
+m_3=1+\frac12\cdot 0+\frac12 m_3.
+\]
+
+Entonces:
+\[
+m_3-\frac12 m_3=1
+\quad\Longrightarrow\quad
+\frac12 m_3=1
+\quad\Longrightarrow\quad
+m_3=2.
+\]
+
+Desde el estado \(2\):
+\[
+m_2=1+\frac13\cdot 0+\frac23 m_3.
+\]
+
+Sustituyendo \(m_3=2\):
+\[
+m_2=1+\frac23(2)=1+\frac43=\frac73.
+\]
+
+Ahora calculamos el retorno al estado \(1\).
+
+Partiendo de \(1\):
+
+\begin{itemize}
+    \item con probabilidad \(\frac14\), regresa inmediatamente en 1 paso;
+    \item con probabilidad \(\frac12\), va a \(2\) y luego tarda en promedio \(m_2\) pasos más;
+    \item con probabilidad \(\frac14\), va a \(3\) y luego tarda en promedio \(m_3\) pasos más.
+\end{itemize}
+
+Por eso,
+\[
+E[R\mid X_0=1]
+=
+\frac14(1)+\frac12(1+m_2)+\frac14(1+m_3).
+\]
+
+Sustituyendo:
+\[
+E[R\mid X_0=1]
+=
+\frac14+\frac12\left(1+\frac73\right)+\frac14(1+2).
+\]
+
+\[
+E[R\mid X_0=1]
+=
+\frac14+\frac12\left(\frac{10}{3}\right)+\frac34.
+\]
+
+\[
+E[R\mid X_0=1]
+=
+\frac14+\frac{5}{3}+\frac34
+=
+1+\frac53
+=
+\frac83.
+\]
+
+Por lo tanto,
+\[
+\boxed{E[R\mid X_0=1]=\frac83}.
+\]
+
+\newpage
+\section*{Ejercicio 5}
+
+Considere la cadena de dos estados con matriz de transición
+\[
+P=
+\begin{pmatrix}
+1-a & a\\
+b & 1-b
+\end{pmatrix}.
+\]
+
+\subsection*{Distribución estacionaria}
+
+Sea
+\[
+\pi=(\pi_0,\pi_1).
+\]
+Buscamos que
+\[
+\pi=\pi P,
+\qquad
+\pi_0+\pi_1=1.
+\]
+
+De la ecuación \(\pi=\pi P\) se obtiene:
+\[
+\pi_0=\pi_0(1-a)+\pi_1 b.
+\]
+
+Reacomodando:
+\[
+\pi_0 a=\pi_1 b.
+\]
+
+Junto con
+\[
+\pi_0+\pi_1=1,
+\]
+se obtiene:
+\[
+\pi_0=\frac{b}{a+b},
+\qquad
+\pi_1=\frac{a}{a+b}.
+\]
+
+Entonces la distribución estacionaria es
+\[
+\boxed{\pi=\left(\frac{b}{a+b},\frac{a}{a+b}\right)}.
+\]
+
+\subsection*{Demostrar que \(r_0=\frac{1}{\pi_0}\)}
+
+Sea \(r_0\) el tiempo medio de recurrencia del estado \(0\).
+
+Primero calculamos el tiempo esperado para regresar a \(0\) empezando desde \(1\). Sea
+\[
+h_1=E_1[\tau_0].
+\]
+
+Desde \(1\), con probabilidad \(b\) se va a \(0\), y con probabilidad \(1-b\) permanece en \(1\). Entonces:
+\[
+h_1=1+b(0)+(1-b)h_1.
+\]
+
+De aquí:
+\[
+h_1-(1-b)h_1=1
+\quad\Longrightarrow\quad
+bh_1=1
+\quad\Longrightarrow\quad
+h_1=\frac1b.
+\]
+
+Ahora empezando desde \(0\):
+
+\begin{itemize}
+    \item con probabilidad \(1-a\), se queda en \(0\), así que retorna en 1 paso;
+    \item con probabilidad \(a\), va a \(1\), usa un paso y luego tarda en promedio \(h_1\) pasos más en volver.
+\end{itemize}
+
+Entonces:
+\[
+r_0=(1-a)(1)+a(1+h_1).
+\]
+
+Sustituyendo \(h_1=\frac1b\):
+\[
+r_0=(1-a)+a\left(1+\frac1b\right).
+\]
+
+\[
+r_0=1+\frac{a}{b}
+=\frac{a+b}{b}.
+\]
+
+Pero como
+\[
+\pi_0=\frac{b}{a+b},
+\]
+entonces
+\[
+\frac1{\pi_0}=\frac{a+b}{b}.
+\]
+
+Por lo tanto,
+\[
+\boxed{r_0=\frac1{\pi_0}}.
+\]
+
+\subsection*{¿Cuándo la distribución estacionaria también es límite?}
+
+Si la cadena es irreducible y aperiódica, entonces la distribución estacionaria también es la distribución límite.
+
+En este caso, cuando \(a>0\) y \(b>0\), la cadena es irreducible. Además, si no ocurre el caso periódico extremo \(a=b=1\), entonces la cadena es aperiódica.
+
+Por lo tanto, en los casos del ejercicio, la distribución estacionaria también es distribución límite.
+
+\[
+\boxed{\text{La distribución estacionaria también es distribución límite.}}
+\]
+
+\newpage
+\section*{Ejercicio 6}
+
+Considere la cadena con matriz
+\[
+P=
+\begin{pmatrix}
+\frac14 & \frac12 & \frac14\\[4pt]
+\frac13 & 0 & \frac23\\[4pt]
+\frac12 & 0 & \frac12
+\end{pmatrix}.
+\]
+
+\subsection*{¿Es irreducible?}
+
+Sí es irreducible, porque todos los estados se comunican entre sí.
+
+Por ejemplo:
+
+\begin{itemize}
+    \item desde \(1\) se puede ir a \(2\) y a \(3\);
+    \item desde \(2\) se puede ir a \(1\) y a \(3\);
+    \item desde \(3\) se puede ir a \(1\), y de \(1\) se puede llegar a \(2\).
+\end{itemize}
+
+Entonces,
+\[
+\boxed{\text{La cadena es irreducible.}}
+\]
+
+\subsection*{¿Es aperiódica?}
+
+Sí, porque
+\[
+p_{11}=\frac14>0.
+\]
+
+Eso significa que desde el estado \(1\) se puede regresar a \(1\) en un paso, así que su periodo es \(1\). Como la cadena es irreducible, todos los estados tienen el mismo periodo.
+
+Por lo tanto,
+\[
+\boxed{\text{La cadena es aperiódica.}}
+\]
+
+\subsection*{Distribución estacionaria}
+
+Sea
+\[
+\pi=(\pi_1,\pi_2,\pi_3).
+\]
+
+Queremos resolver
+\[
+\pi=\pi P,
+\qquad
+\pi_1+\pi_2+\pi_3=1.
+\]
+
+De \(\pi=\pi P\) se obtiene:
+\[
+\pi_2=\frac12\pi_1.
+\]
+
+También:
+\[
+\pi_3=\frac14\pi_1+\frac23\pi_2+\frac12\pi_3.
+\]
+
+Pasamos \(\frac12\pi_3\) al lado izquierdo:
+\[
+\frac12\pi_3=\frac14\pi_1+\frac23\pi_2.
+\]
+
+Sustituyendo \(\pi_2=\frac12\pi_1\):
+\[
+\frac12\pi_3=\frac14\pi_1+\frac23\left(\frac12\pi_1\right)
+=\frac14\pi_1+\frac13\pi_1
+=\frac{7}{12}\pi_1.
+\]
+
+Entonces:
+\[
+\pi_3=\frac76\pi_1.
+\]
+
+Ahora usamos que
+\[
+\pi_1+\pi_2+\pi_3=1.
+\]
+
+Sustituyendo:
+\[
+\pi_1+\frac12\pi_1+\frac76\pi_1=1.
+\]
+
+\[
+\left(1+\frac12+\frac76\right)\pi_1=1.
+\]
+
+\[
+\frac{16}{6}\pi_1=1
+\quad\Longrightarrow\quad
+\frac83\pi_1=1
+\quad\Longrightarrow\quad
+\pi_1=\frac38.
+\]
+
+Entonces:
+\[
+\pi_2=\frac12\cdot\frac38=\frac{3}{16},
+\qquad
+\pi_3=\frac76\cdot\frac38=\frac{7}{16}.
+\]
+
+Por lo tanto, la distribución estacionaria es
+\[
+\boxed{\pi=\left(\frac38,\frac{3}{16},\frac{7}{16}\right)}.
+\]
+
+\subsection*{¿También es distribución límite?}
+
+Sí, porque la cadena es finita, irreducible y aperiódica. Entonces se cumple que la distribución estacionaria también es la distribución límite.
+
+\[
+\boxed{\text{Sí, también es distribución límite.}}
+\]
+
+\newpage
+\section*{Ejercicio 7}
+
+Considere la cadena con espacio de estados
+\[
+S=\{0,1,2,\dots\},
+\]
+y transiciones
+\[
+p_{i,i+1}=p,
+\qquad
+p_{i,0}=1-p,
+\qquad i\geq 0,
+\]
+con
+\[
+\frac12<p<1.
+\]
+
+\subsection*{¿Es irreducible?}
+
+Sí.
+
+Desde cualquier estado \(i\), se puede ir a \(0\) en un paso con probabilidad \(1-p\). Además, desde \(0\) se puede llegar a cualquier estado \(j\) siguiendo
+\[
+0\to 1\to 2\to \cdots \to j,
+\]
+con probabilidad \(p^j>0\).
+
+Entonces todos los estados se comunican y la cadena es irreducible.
+
+\[
+\boxed{\text{La cadena es irreducible.}}
+\]
+
+\subsection*{¿Es aperiódica?}
+
+Sí, porque
+\[
+p_{00}=1-p>0.
+\]
+
+Entonces el estado \(0\) tiene periodo \(1\), y como la cadena es irreducible, todos los estados tienen periodo \(1\).
+
+\[
+\boxed{\text{La cadena es aperiódica.}}
+\]
+
+\subsection*{Distribución estacionaria}
+
+Sea
+\[
+\pi=(\pi_0,\pi_1,\pi_2,\dots).
+\]
+
+Para que sea estacionaria, debe cumplirse que
+\[
+\pi=\pi P.
+\]
+
+Observando las ecuaciones de balance:
+\[
+\pi_1=p\pi_0,
+\]
+\[
+\pi_2=p\pi_1,
+\]
+\[
+\pi_3=p\pi_2,
+\]
+y en general
+\[
+\pi_j=p\pi_{j-1},\qquad j\geq 1.
+\]
+
+Entonces,
+\[
+\pi_j=p^j\pi_0.
+\]
+
+Ahora usamos que la suma de las probabilidades debe ser 1:
+\[
+\sum_{j=0}^{\infty}\pi_j=1.
+\]
+
+Sustituyendo:
+\[
+\sum_{j=0}^{\infty}p^j\pi_0=1.
+\]
+
+\[
+\pi_0\sum_{j=0}^{\infty}p^j=1.
+\]
+
+Como la serie geométrica converge,
+\[
+\sum_{j=0}^{\infty}p^j=\frac{1}{1-p}.
+\]
+
+Entonces:
+\[
+\pi_0\frac{1}{1-p}=1
+\quad\Longrightarrow\quad
+\pi_0=1-p.
+\]
+
+Por lo tanto,
+\[
+\pi_j=(1-p)p^j,\qquad j\geq 0.
+\]
+
+Así, la distribución estacionaria es
+\[
+\boxed{\pi_j=(1-p)p^j,\qquad j=0,1,2,\dots}
+\]
+
+\subsection*{Observación}
+
+Aunque el enunciado parece pedir que no exista distribución estacionaria, al hacer el desarrollo sí se obtiene una. Entonces, para la cadena tal como está escrita, sí existe distribución estacionaria.
+
+\newpage
+\section*{Ejercicio 8 [Punto extra]}
+
+Con base en el ejercicio anterior, se pregunta si los estados son transitorios o nulo recurrentes cuando
+\[
+p>\frac12.
+\]
+
+Como en el ejercicio 7 encontramos una distribución estacionaria y la cadena es irreducible, entonces todos los estados son positivamente recurrentes.
+
+Por lo tanto, no son ni transitorios ni nulo recurrentes.
+
+\[
+\boxed{\text{Todos los estados son positivamente recurrentes.}}
+\]
+
+\end{document}
